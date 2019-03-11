@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+{% for item in item.value.settings | default([]) %}
+{{ item }}
+{% endfor %}
+
+{% for item in item.value.rules | default([]) %}
+{{ item.rule }} {{ item.logpath }}
+{% endfor %}
+
+{% for item in item.value.directives | default([]) %}
+{{ item }}
+{% endfor %}
+
+{% for filter in item.value.filters %}
+{{ filter }} @@{{ item.value.remote_host }}:{{ item.value.remote_port }}
+{% endfor %}

@@ -1,0 +1,28 @@
+---
+- name: Update packages
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: Ensure rsyslog and dependencies are installed.
+  apt:
+    name: rsyslog
+    state: present
+
+- name: Create main rsyslog configuration
+  template:
+    src: rsyslog.conf.j2
+    dest: /etc/rsyslog.conf
+    owner: root
+    group: root
+    mode: 0440
+
+- name: Create remote loggers
+  template:
+    src: etc/rsyslog.d/rsyslog.conf.j2
+    dest: "/etc/rsyslog.d/{{ item.key }}.conf"
+    owner: root
+    group: root
+    mode: 0440
+  with_dict: "{{ rsyslog_d_files }}"
+  notify: restart rsyslog
